@@ -90,6 +90,9 @@ public class Heap<K extends Comparable<K>, V> {
      * Swaps the node at index i downwards until the heap property is satisfied
      */
     private void downHeap(int i) {
+        if (i >= this.size) {
+            return;
+        }
         int smallest = i;
         K currentKey = this.data.get(smallest).getKey();
         int leftIdx = left(i);
