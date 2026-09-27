@@ -181,7 +181,7 @@ public class Heap<K extends Comparable<K>, V> {
         if (this.isEmpty()) {
             return null;
         }
-        return this.data.getFirst();
+        return new Entry<>(this.data.getFirst().getKey(), this.data.getFirst().getValue());
     }
 
     /**
