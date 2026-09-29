@@ -2,6 +2,11 @@
 
 package uq.comp3506.a2.structures;
 
+import javax.print.DocFlavor;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Supplied by the COMP3506/7505 teaching team, Semester 2, 2026.
  * <p>
@@ -10,18 +15,28 @@ package uq.comp3506.a2.structures;
  */
 public class UnorderedMap<K, V> implements MapInterface<K, V> {
 
-
+    private static final int START_CAPACITY = 11;
     /**
      * you will need to put some member variables here to track your
      * data, size, capacity, etc...
      */
-    private int exampleVariable = -1;
+    private int bucketCount = START_CAPACITY;
+    private int size = 0; // pair count
+    private List<LinkedList<Entry<K, V>>> data;
+
+    private void initBuckets(int capacity) {
+        this.data = new ArrayList<>();
+        for (int i = 0; i < capacity; i++) {
+            this.data.add(null);
+        }
+    }
 
     /**
      * Constructs an empty UnorderedMap
      */
     public UnorderedMap() {
         // Implement me!
+        initBuckets(START_CAPACITY);
     }
 
     /**
@@ -31,7 +46,7 @@ public class UnorderedMap<K, V> implements MapInterface<K, V> {
     @Override
     public int size() {
         // Implement me!
-        return -1;
+        return this.size;
     }
 
     /**
@@ -40,7 +55,7 @@ public class UnorderedMap<K, V> implements MapInterface<K, V> {
      */
     @Override
     public boolean isEmpty() {
-        return false;
+        return this.size == 0;
     }
 
     /**
@@ -51,6 +66,9 @@ public class UnorderedMap<K, V> implements MapInterface<K, V> {
     @Override
     public void clear() {
         // Implement me!
+        this.size = 0;
+        this.bucketCount = START_CAPACITY;
+        initBuckets(START_CAPACITY);
     }
 
     /**
@@ -65,7 +83,27 @@ public class UnorderedMap<K, V> implements MapInterface<K, V> {
     @Override
     public V put(K key, V value) {
         // Implement me!
-        return null;
+        int bucketIdx = key.hashCode() % this.bucketCount;
+        if (bucketIdx < 0) {
+            bucketIdx += this.bucketCount;
+        }
+        LinkedList<Entry<K, V>> bucket = this.data.get(bucketIdx);
+        V prevValue = null;
+        if (bucket == null) {
+            bucket = new LinkedList<>();
+            this.data.set(bucketIdx, bucket);
+        } else {
+            for (Entry<K, V> entry : bucket) {
+                if (entry.getKey().equals(key)) {
+                    prevValue = entry.getValue();
+                    entry.setValue(value);
+                    return prevValue;
+                }
+            }
+        }
+        bucket.add(new Entry<>(key, value));
+        this.size++;
+        return prevValue;
     }
 
     /**
