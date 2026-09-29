@@ -83,10 +83,8 @@ public class UnorderedMap<K, V> implements MapInterface<K, V> {
     @Override
     public V put(K key, V value) {
         // Implement me!
-        int bucketIdx = key.hashCode() % this.bucketCount;
-        if (bucketIdx < 0) {
-            bucketIdx += this.bucketCount;
-        }
+        int bucketIdx = getBucketIdx(key);
+
         LinkedList<Entry<K, V>> bucket = this.data.get(bucketIdx);
         V prevValue = null;
         if (bucket == null) {
@@ -103,6 +101,11 @@ public class UnorderedMap<K, V> implements MapInterface<K, V> {
         }
         bucket.add(new Entry<>(key, value));
         this.size++;
+
+        if ((double) this.size / this.bucketCount > 0.8) {
+            resize();
+        }
+
         return prevValue;
     }
 
@@ -116,6 +119,15 @@ public class UnorderedMap<K, V> implements MapInterface<K, V> {
     @Override
     public V get(K key) {
         // Implement me!
+        int bucketIdx = getBucketIdx(key);
+        LinkedList<Entry<K, V>> bucket = this.data.get(bucketIdx);
+        if (bucket != null) {
+            for (Entry<K, V> entry : bucket) {
+                if (entry.getKey().equals(key)) {
+                    return entry.getValue();
+                }
+            }
+        }
         return null;
     }
 
@@ -129,9 +141,71 @@ public class UnorderedMap<K, V> implements MapInterface<K, V> {
     @Override
     public V remove(K key) {
         // Implement me!
+        int bucketIdx = getBucketIdx(key);
+        LinkedList<Entry<K, V>> bucket = this.data.get(bucketIdx);
+        if (bucket != null) {
+            for (Entry<K, V> entry : bucket) {
+                if (entry.getKey().equals(key)) {
+                    V remValue = entry.getValue();
+                    bucket.remove(entry);
+                    this.size--;
+                    return remValue;
+                }
+            }
+        }
         return null;
     }
 
     // More helpers here if you need 
 
+    private int getBucketIdx(K key) {
+        int bucketIdx = key.hashCode() % this.bucketCount;
+        if (bucketIdx < 0) {
+            bucketIdx += this.bucketCount;
+        }
+        return bucketIdx;
+    }
+
+    // Claude assisted prime functions
+    private static boolean isPrime(int n) {
+        if (n < 2) return false;
+        for (int i = 2; (long) i * i <= n; i++) {
+            if (n % i == 0) return false;
+        }
+        return true;
+    }
+
+    private static int nextPrime(int from) {
+        int candidate = from;
+        while (!isPrime(candidate)) {
+            candidate++;
+        }
+        return candidate;
+    }
+
+    private void rehashInsert(K key, V value) {
+        int bucketIdx = getBucketIdx(key);
+        LinkedList<Entry<K, V>> bucket = this.data.get(bucketIdx);
+        if (bucket == null) {
+            bucket = new LinkedList<>();
+            this.data.set(bucketIdx, bucket);
+        }
+        bucket.add(new Entry<>(key, value));
+    }
+
+    private void resize() {
+        List<LinkedList<Entry<K, V>>> oldData = this.data;
+        int newCapacity = nextPrime(this.bucketCount * 2);
+        initBuckets(newCapacity);
+        this.bucketCount = newCapacity;
+
+        for (LinkedList<Entry<K, V>> bucket : oldData) {
+            if (bucket == null) {
+                continue;
+            }
+            for (Entry<K, V> entry : bucket) {
+                rehashInsert(entry.getKey(), entry.getValue());
+            }
+        }
+    }
 }
