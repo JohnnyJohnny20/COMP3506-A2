@@ -3,15 +3,10 @@
 package uq.comp3506.a2;
 
 import uq.comp3506.a2.structures.Edge;
-import uq.comp3506.a2.structures.Vertex;
 import uq.comp3506.a2.structures.TopologyType;
-import uq.comp3506.a2.structures.Entry;
-import uq.comp3506.a2.structures.MapInterface;
-import uq.comp3506.a2.structures.UnorderedMap;
-import uq.comp3506.a2.structures.Heap;
 
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 // This is part of COMP3506 Assignment 2. Students must implement their own solutions.
@@ -39,9 +34,21 @@ public class Problems {
      * or {@code -1} if no number exists
      */
     public static long cantEven(Long[] numbers) {
-        // This is just a placeholder.
-        // Modify this method as you wish
-        return -1;
+        HashSet<Long> oddNumbers = new HashSet<>();
+        for (Long number : numbers) {
+            boolean added = oddNumbers.add(number);
+            if (!added) {
+                oddNumbers.remove(number); // count is even
+            }
+        }
+
+        long largest = -1;
+        for (long number : oddNumbers) {
+            if (number > largest) {
+                largest = number;
+            }
+        }
+        return largest;
     }
 
 
