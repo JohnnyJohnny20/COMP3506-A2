@@ -80,7 +80,6 @@ public class Problems {
         int Y = 0;
         Point start = new Point(X, Y);
         points.add(start);
-        int count = -1;
         for (int i = 0; i < commands.length(); i++) {
             char dir = commands.charAt(i);
             switch (dir) {
@@ -99,9 +98,8 @@ public class Problems {
             }
             Point point = new Point(X, Y);
             if (!points.add(point)) {
-                return count;
+                return i;
             }
-            count++;
         }
         return -1;
     }
