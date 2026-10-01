@@ -34,22 +34,24 @@ public class Problems {
      * or {@code -1} if no number exists
      */
     public static long cantEven(Long[] numbers) {
-        HashSet<Long> oddNumbers = new HashSet<>();
+        HashSet<Long> oddOccuringNumbers = new HashSet<>();
         for (Long number : numbers) {
-            boolean added = oddNumbers.add(number);
+            boolean added = oddOccuringNumbers.add(number);
             if (!added) {
-                oddNumbers.remove(number); // count is even
+                oddOccuringNumbers.remove(number); // count is even
             }
         }
 
         long largest = -1;
-        for (long number : oddNumbers) {
+        for (long number : oddOccuringNumbers) {
             if (number > largest) {
                 largest = number;
             }
         }
         return largest;
     }
+
+    private record Point(int x, int y) {}
 
 
     /**
@@ -73,6 +75,34 @@ public class Problems {
     public static long firstVisited(String commands) {
         // This is just a placeholder.
         // Modify this method as you wish
+        HashSet<Point> points = new HashSet<>();
+        int X = 0;
+        int Y = 0;
+        Point start = new Point(X, Y);
+        points.add(start);
+        int count = -1;
+        for (int i = 0; i < commands.length(); i++) {
+            char dir = commands.charAt(i);
+            switch (dir) {
+                case 'U':
+                    Y++;
+                    break;
+                case 'L':
+                    X--;
+                    break;
+                case 'D':
+                    Y--;
+                    break;
+                case 'R':
+                    X++;
+                    break;
+            }
+            Point point = new Point(X, Y);
+            if (!points.add(point)) {
+                return count;
+            }
+            count++;
+        }
         return -1;
     }
 
