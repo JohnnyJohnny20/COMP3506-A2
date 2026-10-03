@@ -52,6 +52,17 @@ public class Pathfinder {
         parent[rootA] = rootB;
     }
 
+    private boolean inBounds(int x, int y) {
+        return x >= 0 && x < dimension && y >= 0 && y < dimension;
+    }
+
+    private void checkAndUnion(int x, int y, int originIdx) {
+        int flatIdx = getIndex(x, y);
+        if (inBounds(x, y) && isAccessible[flatIdx]) {
+            union(flatIdx, originIdx);
+        }
+    }
+
     /**
      * Marks a cell as accessible.
      *
@@ -59,7 +70,13 @@ public class Pathfinder {
      * @param y the cell's vertical coordinate, in the range {@code [0, dimension)}
      */
     public void makeCellAccessible(int x, int y) {
+        int idx = getIndex(x, y);
+        isAccessible[idx] = true;
 
+        checkAndUnion(x - 1, y, idx);
+        checkAndUnion(x + 1, y, idx);
+        checkAndUnion(x, y - 1, idx);
+        checkAndUnion(x, y + 1, idx);
     }
 
     /**
