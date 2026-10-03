@@ -39,10 +39,10 @@ public class Pathfinder {
     }
 
     private int find(int i) {
-        if (parent[i] == i) {
-            return i;
+        while (i != parent[i]) {
+            i = parent[i];
         }
-        return find(parent[i]);
+        return i;
     }
 
     private void union(int idxA, int idxB) {
