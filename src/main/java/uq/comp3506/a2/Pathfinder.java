@@ -15,7 +15,10 @@ public class Pathfinder {
     private final int dimension;
     private final int[] parent;
     private final boolean[] isAccessible;
-    
+
+    private final int vRight;
+    private final int vLeft;
+
     /**
      * Creates a pathfinder whose cells are initially inaccessible.
      *
@@ -26,12 +29,19 @@ public class Pathfinder {
 
         // Implement the initialisation logic
         int totalCells = dimension * dimension;
-        this.parent = new int[totalCells];
-        this.isAccessible = new boolean[totalCells];
+        this.parent = new int[totalCells + 2];
+        this.isAccessible = new boolean[totalCells + 2];
+
+        this.vLeft = totalCells;
+        this.vRight = totalCells + 1;
 
         for (int i = 0; i < totalCells; i++) {
             parent[i] = i;
         }
+
+        this.isAccessible[vLeft] = true;
+        this.isAccessible[vRight] = true;
+
     }
 
     private int getIndex(int x, int y) {
@@ -61,6 +71,12 @@ public class Pathfinder {
         if (inBounds(x, y) && isAccessible[flatIdx]) {
             union(flatIdx, originIdx);
         }
+        if (x == 0) {
+            union(flatIdx, vLeft);
+        }
+        if (x == dimension - 1) {
+            union(flatIdx, vRight);
+        }
     }
 
     /**
@@ -86,6 +102,6 @@ public class Pathfinder {
      * @return {@code true} if such a path exists; otherwise {@code false}
      */
     public boolean doesPathExist() {
-        return false;
+        return find(vLeft) == find(vRight);
     }
 }
