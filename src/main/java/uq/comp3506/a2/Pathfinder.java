@@ -50,7 +50,8 @@ public class Pathfinder {
 
     private int find(int i) {
         while (i != parent[i]) {
-            i = parent[parent[i]];
+            parent[i] = parent[parent[i]];
+            i = parent[i];
         }
         return i;
     }
