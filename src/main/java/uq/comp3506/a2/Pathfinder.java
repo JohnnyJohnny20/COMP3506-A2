@@ -13,7 +13,9 @@ package uq.comp3506.a2;
 public class Pathfinder {
 
     private final int dimension;
-
+    private final int[] parent;
+    private final boolean[] isAccessible;
+    
     /**
      * Creates a pathfinder whose cells are initially inaccessible.
      *
@@ -23,8 +25,33 @@ public class Pathfinder {
         this.dimension = dimension;
 
         // Implement the initialisation logic
+        int totalCells = dimension * dimension;
+        this.parent = new int[totalCells];
+        this.isAccessible = new boolean[totalCells];
+
+        for (int i = 0; i < totalCells; i++) {
+            parent[i] = i;
+        }
     }
-    
+
+    private int getIndex(int x, int y) {
+        return y * dimension + x;
+    }
+
+    private int find(int i) {
+        if (parent[i] == i) {
+            return i;
+        }
+        return find(parent[i]);
+    }
+
+    private void union(int idxA, int idxB) {
+        int rootA = find(idxA);
+        int rootB = find(idxB);
+
+        parent[rootA] = rootB;
+    }
+
     /**
      * Marks a cell as accessible.
      *
