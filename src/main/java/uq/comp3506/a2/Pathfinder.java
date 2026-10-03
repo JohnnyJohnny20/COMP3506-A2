@@ -35,7 +35,7 @@ public class Pathfinder {
         this.vLeft = totalCells;
         this.vRight = totalCells + 1;
 
-        for (int i = 0; i < totalCells; i++) {
+        for (int i = 0; i < totalCells + 2; i++) {
             parent[i] = i;
         }
 
@@ -67,16 +67,14 @@ public class Pathfinder {
     }
 
     private void checkAndUnion(int x, int y, int originIdx) {
-        int flatIdx = getIndex(x, y);
-        if (inBounds(x, y) && isAccessible[flatIdx]) {
-            union(flatIdx, originIdx);
+
+        if (inBounds(x, y)) {
+            int flatIdx = getIndex(x, y);
+            if(isAccessible[flatIdx]) {
+                union(flatIdx, originIdx);
+            }
         }
-        if (x == 0) {
-            union(flatIdx, vLeft);
-        }
-        if (x == dimension - 1) {
-            union(flatIdx, vRight);
-        }
+
     }
 
     /**
@@ -93,6 +91,13 @@ public class Pathfinder {
         checkAndUnion(x + 1, y, idx);
         checkAndUnion(x, y - 1, idx);
         checkAndUnion(x, y + 1, idx);
+
+        if (x == 0) {
+            union(idx, vLeft);
+        }
+        if (x == dimension - 1) {
+            union(idx, vRight);
+        }
     }
 
     /**
