@@ -193,6 +193,9 @@ public class Problems {
                 hasCycle.add(root1);
             } else {
                 union(v1, v2, parent);
+                if (hasCycle.contains(root1)) {
+                    hasCycle.add(root2);
+                }
             }
         }
 
