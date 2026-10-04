@@ -190,14 +190,14 @@ public class Problems {
             int root1 = find(v1, parent);
             int root2 = find(v2, parent);
             if (root1 == root2) {
-                hasCycle.add(v1);
+                hasCycle.add(root1);
             } else {
                 union(v1, v2, parent);
             }
         }
 
-        for (int i = 0; i < parent.size(); i++) {
-            if (parent.get(i) == i) {
+        for (Integer i : parent.keySet()) {
+            if (parent.get(i).equals(i)) {
                 roots++;
                 if (hasCycle.contains(i)) {
                     cyclicRoots++;
