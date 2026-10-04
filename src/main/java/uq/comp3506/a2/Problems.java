@@ -136,13 +136,15 @@ public class Problems {
 
     private static int find(int i, HashMap<Integer, Integer> parent) {
         while (i != parent.get(i)) {
-            parent.replace(parent.get(i), parent.get(parent.get(i)));
-            i = parent.get(i);
+            int currentParent = parent.get(i);
+            int grandParent = parent.get(currentParent);
+            parent.put(i, grandParent);
+            i = grandParent;
         }
         return i;
     }
 
-    private void union(int idxA, int idxB, HashMap<Integer, Integer> parent) {
+    private static void union(int idxA, int idxB, HashMap<Integer, Integer> parent) {
         int rootA = find(idxA, parent);
         int rootB = find(idxB, parent);
 
@@ -169,13 +171,17 @@ public class Problems {
      */
     public static <S, U> TopologyType topologyDetection(List<Edge<S, U>> edgeList) {
         TopologyType dummy = TopologyType.UNKNOWN;
+        int roots = 0;
+        int cyclicRoots = 0;
         HashMap<Integer, Integer> parent = new HashMap<>(); // Key will be vertex, Value will be parent.
+        HashSet<Integer> hasCycle = new HashSet<>();
+
         for (Edge<S, U> edge : edgeList) {
             int v1 = edge.getVertex1().getId();
             int v2 = edge.getVertex2().getId();
 
             if (!parent.containsKey(v1)) {
-                parent.put(v1, v1);
+                parent.put(v1, v1); // set parent to itself
             }
             if (!parent.containsKey(v2)) {
                 parent.put(v2, v2);
@@ -184,12 +190,26 @@ public class Problems {
             int root1 = find(v1, parent);
             int root2 = find(v2, parent);
             if (root1 == root2) {
-                dummy = TopologyType.CONNECTED_CONFUSING;
-                break;
+                hasCycle.add(v1);
             } else {
-                break;
+                union(v1, v2, parent);
             }
         }
+
+        for (int i = 0; i < parent.size(); i++) {
+            if (parent.get(i) == i) {
+                roots++;
+                if (hasCycle.contains(i)) {
+                    cyclicRoots++;
+                }
+            }
+        }
+
+        if (roots == 1 && cyclicRoots == 0) return TopologyType.CONNECTED_CONFIDENT;
+        if (roots == 1 && cyclicRoots == 1) return TopologyType.CONNECTED_CONFUSING;
+        if (roots > 1 && cyclicRoots == 0) return TopologyType.DISCONNECTED_CONFIDENT;
+        if (roots > 1 && cyclicRoots == roots) return TopologyType.DISCONNECTED_CONFUSING;
+        if (cyclicRoots > 0 && cyclicRoots < roots) return TopologyType.HYBRID;
         return dummy;
     }
 
