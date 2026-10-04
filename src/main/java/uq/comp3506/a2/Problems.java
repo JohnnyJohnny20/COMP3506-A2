@@ -6,6 +6,7 @@ import uq.comp3506.a2.structures.Edge;
 import uq.comp3506.a2.structures.TopologyType;
 
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -132,6 +133,22 @@ public class Problems {
         return new Pathfinder(n);
     }
 
+
+    private static int find(int i, HashMap<Integer, Integer> parent) {
+        while (i != parent.get(i)) {
+            parent.replace(parent.get(i), parent.get(parent.get(i)));
+            i = parent.get(i);
+        }
+        return i;
+    }
+
+    private void union(int idxA, int idxB, HashMap<Integer, Integer> parent) {
+        int rootA = find(idxA, parent);
+        int rootB = find(idxB, parent);
+
+        parent.replace(rootA, rootB);
+    }
+
     /**
      * Determines the topology of the burrow system represented by an edge list.
      *
@@ -152,6 +169,27 @@ public class Problems {
      */
     public static <S, U> TopologyType topologyDetection(List<Edge<S, U>> edgeList) {
         TopologyType dummy = TopologyType.UNKNOWN;
+        HashMap<Integer, Integer> parent = new HashMap<>(); // Key will be vertex, Value will be parent.
+        for (Edge<S, U> edge : edgeList) {
+            int v1 = edge.getVertex1().getId();
+            int v2 = edge.getVertex2().getId();
+
+            if (!parent.containsKey(v1)) {
+                parent.put(v1, v1);
+            }
+            if (!parent.containsKey(v2)) {
+                parent.put(v2, v2);
+            }
+
+            int root1 = find(v1, parent);
+            int root2 = find(v2, parent);
+            if (root1 == root2) {
+                dummy = TopologyType.CONNECTED_CONFUSING;
+                break;
+            } else {
+                break;
+            }
+        }
         return dummy;
     }
 
