@@ -272,7 +272,7 @@ public class Problems {
             }
         }
 
-        for (int i = n; i > 0; i--) {
+        for (int i = longestPathLength; i > 0; i--) {
             ArrayList<Integer> bucket = maxPaths.get(i);
             if (bucket.size() == 1) {
                 continue;
