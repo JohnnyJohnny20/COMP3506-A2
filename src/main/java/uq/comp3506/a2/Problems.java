@@ -258,7 +258,7 @@ public class Problems {
             allNodes[i] = i;
         }
         ArrayList<ArrayList<Integer>> maxPaths = new ArrayList<>();
-        for (int i = 0; i < n ; i++) {
+        for (int i = 0; i < n + 1 ; i++) {
             maxPaths.add(new ArrayList<>()); // create buckets
         }
 
@@ -281,7 +281,7 @@ public class Problems {
             if (i == longestPathLength) {
                 candidate = bucket.getFirst();
             } else {
-                candidate = determineNextNode(graphOracle, bucket, i + 1);
+                candidate = determineNextNode(graphOracle, bucket, maxPaths.get(i+1).getFirst());
             }
 
             bucket.clear();
