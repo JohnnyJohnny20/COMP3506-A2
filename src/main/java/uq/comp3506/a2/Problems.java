@@ -219,14 +219,10 @@ public class Problems {
 
     private static int determineNextNode(MightyGraphOracle oracle, ArrayList<Integer> candidates, int prev) {
         for (int candidate : candidates) {
-            int[] test = new int[candidates.size()];
-            for (int i = 0; i < candidates.size() - 1; i++) {
-                if (candidates.get(i) != candidate) {
-                    test[i] = candidates.get(i);
-                }
-            }
-            test[candidates.size() - 1] = prev;
-            if (oracle.query(prev, test) == 0) {
+            int[] test = new int[2];
+            test[0] = candidate;
+            test[1] = prev;
+            if (oracle.query(prev, test) == 2) {
                 return candidate;
             }
         }
@@ -289,7 +285,7 @@ public class Problems {
             bucket.add(candidate);
         }
 
-        int[] longestPath = new int[n];
+        int[] longestPath = new int[longestPathLength];
         int outIdx = 0;
         for (int i = longestPathLength; i > 0; i--) {
             if (!maxPaths.get(i).isEmpty()) {
