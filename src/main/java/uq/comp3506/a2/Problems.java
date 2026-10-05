@@ -290,9 +290,10 @@ public class Problems {
         }
 
         int[] longestPath = new int[n];
+        int outIdx = 0;
         for (int i = longestPathLength; i > 0; i--) {
             if (!maxPaths.get(i).isEmpty()) {
-                longestPath[i] = maxPaths.get(i).getFirst();
+                longestPath[outIdx++] = maxPaths.get(i).getFirst();
             }
         }
         graphOracle.test(longestPath);
