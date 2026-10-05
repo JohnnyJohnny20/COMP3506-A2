@@ -272,7 +272,13 @@ public class Problems {
             if (bucket.size() == 1) {
                 continue;
             }
-            int candidate = determineNextNode(graphOracle, bucket, i + 1); // Likely bug if first node is dupe
+            int candidate;
+            if (i == n) {
+                candidate = bucket.getFirst();
+            } else {
+                candidate = determineNextNode(graphOracle, bucket, i + 1); // Likely bug if first node is dupe
+            }
+
             bucket.clear();
             bucket.add(candidate);
         }
