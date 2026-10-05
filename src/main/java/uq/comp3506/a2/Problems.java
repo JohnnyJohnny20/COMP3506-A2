@@ -6,6 +6,7 @@ import uq.comp3506.a2.structures.Edge;
 import uq.comp3506.a2.structures.TopologyType;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -216,6 +217,21 @@ public class Problems {
         return dummy;
     }
 
+    private static int determineNextNode(MightyGraphOracle oracle, ArrayList<Integer> candidates, int prev) {
+        for (int candidate : candidates) {
+            int[] test = new int[candidates.size() - 1];
+            for (int i = 0; i < candidates.size() - 1; i++) {
+                if (candidates.get(i) != candidate) {
+                    test[i] = candidates.get(i);
+                }
+            }
+            if (oracle.query(prev, test) == 0) {
+                return candidate;
+            }
+        }
+        return -1;
+    }
+
     /**
      * Finds and submits a longest path through a hidden directed acyclic graph.
      *
@@ -236,8 +252,35 @@ public class Problems {
      * @param graphOracle the oracle used to query the hidden graph and submit a solution
      */
     public static void graphExplorer(MightyGraphOracle graphOracle) {
+        int n = graphOracle.numberOfNodes();
+        int[] allNodes = new int[n];
+        for (int i = 0; i < n; i++) {
+            allNodes[i] = i;
+        }
+        ArrayList<ArrayList<Integer>> maxPaths = new ArrayList<>();
+        for (int i = 0; i < n ; i++) {
+            maxPaths.add(new ArrayList<>()); // create buckets
+        }
 
+        // Fill buckets - nodes grouped by max path
+        for (int i = 0; i < n; i++) {
+            maxPaths.get(graphOracle.query(i,allNodes)).add(i);
+        }
+
+        for (int i = n; i > 0; i--) {
+            ArrayList<Integer> bucket = maxPaths.get(i);
+            if (bucket.size() == 1) {
+                continue;
+            }
+            int candidate = determineNextNode(graphOracle, bucket, i + 1); // Likely bug if first node is dupe
+            bucket.clear();
+            bucket.add(candidate);
+        }
+
+        int[] longestPath = new int[n];
+        for (int i = 0; i < n; i++) {
+            longestPath[i] = maxPaths.get(i).getFirst();
+        }
+        graphOracle.test(longestPath);
     }
-
-
 }
