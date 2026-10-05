@@ -219,12 +219,13 @@ public class Problems {
 
     private static int determineNextNode(MightyGraphOracle oracle, ArrayList<Integer> candidates, int prev) {
         for (int candidate : candidates) {
-            int[] test = new int[candidates.size() - 1];
+            int[] test = new int[candidates.size()];
             for (int i = 0; i < candidates.size() - 1; i++) {
                 if (candidates.get(i) != candidate) {
                     test[i] = candidates.get(i);
                 }
             }
+            test[candidates.size() - 1] = prev;
             if (oracle.query(prev, test) == 0) {
                 return candidate;
             }
