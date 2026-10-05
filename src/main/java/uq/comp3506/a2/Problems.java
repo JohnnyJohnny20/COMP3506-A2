@@ -262,9 +262,14 @@ public class Problems {
             maxPaths.add(new ArrayList<>()); // create buckets
         }
 
+        int longestPathLength = 0;
         // Fill buckets - nodes grouped by max path
         for (int i = 0; i < n; i++) {
-            maxPaths.get(graphOracle.query(i,allNodes)).add(i);
+            int pathLength = graphOracle.query(i,allNodes);
+            maxPaths.get(pathLength).add(i);
+            if (pathLength > longestPathLength) {
+                longestPathLength = pathLength;
+            }
         }
 
         for (int i = n; i > 0; i--) {
@@ -273,10 +278,10 @@ public class Problems {
                 continue;
             }
             int candidate;
-            if (i == n) {
+            if (i == longestPathLength) {
                 candidate = bucket.getFirst();
             } else {
-                candidate = determineNextNode(graphOracle, bucket, i + 1); // Likely bug if first node is dupe
+                candidate = determineNextNode(graphOracle, bucket, i + 1);
             }
 
             bucket.clear();
