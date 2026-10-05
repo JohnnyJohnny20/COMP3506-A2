@@ -290,7 +290,7 @@ public class Problems {
         }
 
         int[] longestPath = new int[n];
-        for (int i = 0; i < n; i++) {
+        for (int i = longestPathLength; i > 0; i--) {
             if (!maxPaths.get(i).isEmpty()) {
                 longestPath[i] = maxPaths.get(i).getFirst();
             }
