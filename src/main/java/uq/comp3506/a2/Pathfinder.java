@@ -17,8 +17,8 @@ public class Pathfinder {
     private final boolean[] isAccessible;
 
     // Virtual nodes signifying connection to edge in any way
-    private final int vRight;
-    private final int vLeft;
+    private final int vertexRight;
+    private final int vertexLeft;
 
     /**
      * Creates a pathfinder whose cells are initially inaccessible.
@@ -33,15 +33,15 @@ public class Pathfinder {
         this.parent = new int[totalCells + 2];
         this.isAccessible = new boolean[totalCells + 2];
 
-        this.vLeft = totalCells;
-        this.vRight = totalCells + 1;
+        this.vertexLeft = totalCells;
+        this.vertexRight = totalCells + 1;
 
         for (int i = 0; i < totalCells + 2; i++) {
             parent[i] = i;
         }
 
-        this.isAccessible[vLeft] = true; // default
-        this.isAccessible[vRight] = true;
+        this.isAccessible[vertexLeft] = true; // default
+        this.isAccessible[vertexRight] = true;
 
     }
 
@@ -97,7 +97,7 @@ public class Pathfinder {
     private void checkAndUnion(int x, int y, int originIdx) {
         if (inBounds(x, y)) {
             int flatIdx = getIndex(x, y);
-            if(isAccessible[flatIdx]) {
+            if (isAccessible[flatIdx]) {
                 union(flatIdx, originIdx);
             }
         }
@@ -119,10 +119,10 @@ public class Pathfinder {
         checkAndUnion(x, y + 1, idx);
 
         if (x == 0) { // connected to the left edge
-            union(idx, vLeft);
+            union(idx, vertexLeft);
         }
         if (x == dimension - 1) { // connected to the right edge
-            union(idx, vRight);
+            union(idx, vertexRight);
         }
     }
 
@@ -133,6 +133,6 @@ public class Pathfinder {
      * @return {@code true} if such a path exists; otherwise {@code false}
      */
     public boolean doesPathExist() {
-        return find(vLeft) == find(vRight);
+        return find(vertexLeft) == find(vertexRight);
     }
 }

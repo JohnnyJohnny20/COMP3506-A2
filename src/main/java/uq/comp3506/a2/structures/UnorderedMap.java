@@ -174,9 +174,13 @@ public class UnorderedMap<K, V> implements MapInterface<K, V> {
      * @AI This method was written by Claude Sonnet 5.5
      */
     private static boolean isPrime(int n) {
-        if (n < 2) return false;
+        if (n < 2) {
+            return false;
+        }
         for (int i = 2; (long) i * i <= n; i++) { // Checks square roots only
-            if (n % i == 0) return false;
+            if (n % i == 0) {
+                return false;
+            }
         }
         return true;
     }

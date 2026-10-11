@@ -153,7 +153,7 @@ public class Heap<K extends Comparable<K>, V> {
         if (this.isEmpty()) {
             return null;
         }
-        Entry<K, V> root = this.data.getFirst();
+        final Entry<K, V> root = this.data.getFirst();
         swap(0, this.size - 1);
         this.data.remove(this.size - 1); // Maintains this.size == data.size()
         this.size--;

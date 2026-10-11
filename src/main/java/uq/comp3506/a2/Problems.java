@@ -76,27 +76,27 @@ public class Problems {
      */
     public static long firstVisited(String commands) {
         HashSet<Point> points = new HashSet<>();
-        int X = 0;
-        int Y = 0;
-        Point start = new Point(X, Y);
+        int x = 0;
+        int y = 0;
+        Point start = new Point(x, y);
         points.add(start);
         for (int i = 0; i < commands.length(); i++) {
             char dir = commands.charAt(i);
             switch (dir) {
                 case 'U':
-                    Y++;
+                    y++;
                     break;
                 case 'L':
-                    X--;
+                    x--;
                     break;
                 case 'D':
-                    Y--;
+                    y--;
                     break;
                 case 'R':
-                    X++;
+                    x++;
                     break;
             }
-            Point point = new Point(X, Y);
+            Point point = new Point(x, y);
             if (!points.add(point)) { // Duplicate
                 return i;
             }
@@ -180,10 +180,9 @@ public class Problems {
      * @return the graph's topology type
      */
     public static <S, U> TopologyType topologyDetection(List<Edge<S, U>> edgeList) {
-        TopologyType dummy = TopologyType.UNKNOWN;
         int roots = 0;
         int cyclicRoots = 0;
-        HashMap<Integer, Integer> parent = new HashMap<>(); // Key will be vertex, Value will be parent.
+        HashMap<Integer, Integer> parent = new HashMap<>(); // Key will be vertex, Value = parent.
         HashSet<Integer> hasCycle = new HashSet<>();
 
         for (Edge<S, U> edge : edgeList) {
@@ -218,12 +217,22 @@ public class Problems {
             }
         }
 
-        if (roots == 1 && cyclicRoots == 0) return TopologyType.CONNECTED_CONFIDENT;
-        if (roots == 1 && cyclicRoots == 1) return TopologyType.CONNECTED_CONFUSING;
-        if (roots > 1 && cyclicRoots == 0) return TopologyType.DISCONNECTED_CONFIDENT;
-        if (roots > 1 && cyclicRoots == roots) return TopologyType.DISCONNECTED_CONFUSING;
-        if (cyclicRoots > 0 && cyclicRoots < roots) return TopologyType.HYBRID;
-        return dummy;
+        if (roots == 1 && cyclicRoots == 0) {
+            return TopologyType.CONNECTED_CONFIDENT;
+        }
+        if (roots == 1 && cyclicRoots == 1) {
+            return TopologyType.CONNECTED_CONFUSING;
+        }
+        if (roots > 1 && cyclicRoots == 0) {
+            return TopologyType.DISCONNECTED_CONFIDENT;
+        }
+        if (roots > 1 && cyclicRoots == roots) {
+            return TopologyType.DISCONNECTED_CONFUSING;
+        }
+        if (cyclicRoots > 0 && cyclicRoots < roots) {
+            return TopologyType.HYBRID;
+        }
+        return TopologyType.UNKNOWN;
     }
 
     /**
@@ -234,7 +243,8 @@ public class Problems {
      * @param prev The previous valid node
      * @return the valid next node
      */
-    private static int determineNextNode(MightyGraphOracle oracle, ArrayList<Integer> candidates, int prev) {
+    private static int determineNextNode(MightyGraphOracle oracle, ArrayList<Integer> candidates,
+                                         int prev) {
         for (int candidate : candidates) {
             int[] test = new int[2];
             test[0] = candidate;
@@ -272,14 +282,14 @@ public class Problems {
             allNodes[i] = i;
         }
         ArrayList<ArrayList<Integer>> maxPaths = new ArrayList<>();
-        for (int i = 0; i < n + 1 ; i++) {
+        for (int i = 0; i < n + 1; i++) {
             maxPaths.add(new ArrayList<>()); // initializes buckets
         }
 
         int longestPathLength = 0;
         // Fill buckets - nodes grouped by max path
         for (int i = 0; i < n; i++) {
-            int pathLength = graphOracle.query(i,allNodes);
+            int pathLength = graphOracle.query(i, allNodes);
             maxPaths.get(pathLength).add(i);
             if (pathLength > longestPathLength) {
                 longestPathLength = pathLength; // records the longest path length
@@ -295,7 +305,7 @@ public class Problems {
             if (i == longestPathLength) { // If multiple starting point for longest, take any start
                 candidate = bucket.getFirst();
             } else {
-                candidate = determineNextNode(graphOracle, bucket, maxPaths.get(i+1).getFirst());
+                candidate = determineNextNode(graphOracle, bucket, maxPaths.get(i + 1).getFirst());
             }
 
             bucket.clear();
