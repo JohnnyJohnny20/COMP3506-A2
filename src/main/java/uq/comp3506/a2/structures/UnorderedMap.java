@@ -35,7 +35,6 @@ public class UnorderedMap<K, V> implements MapInterface<K, V> {
      * Constructs an empty UnorderedMap
      */
     public UnorderedMap() {
-        // Implement me!
         initBuckets(START_CAPACITY);
     }
 
@@ -45,7 +44,6 @@ public class UnorderedMap<K, V> implements MapInterface<K, V> {
      */
     @Override
     public int size() {
-        // Implement me!
         return this.size;
     }
 
@@ -65,7 +63,6 @@ public class UnorderedMap<K, V> implements MapInterface<K, V> {
      */
     @Override
     public void clear() {
-        // Implement me!
         this.size = 0;
         this.bucketCount = START_CAPACITY;
         initBuckets(START_CAPACITY);
@@ -82,7 +79,6 @@ public class UnorderedMap<K, V> implements MapInterface<K, V> {
      */
     @Override
     public V put(K key, V value) {
-        // Implement me!
         int bucketIdx = getBucketIdx(key);
 
         LinkedList<Entry<K, V>> bucket = this.data.get(bucketIdx);
@@ -118,7 +114,6 @@ public class UnorderedMap<K, V> implements MapInterface<K, V> {
      */
     @Override
     public V get(K key) {
-        // Implement me!
         int bucketIdx = getBucketIdx(key);
         LinkedList<Entry<K, V>> bucket = this.data.get(bucketIdx);
         if (bucket != null) {
@@ -140,7 +135,6 @@ public class UnorderedMap<K, V> implements MapInterface<K, V> {
      */
     @Override
     public V remove(K key) {
-        // Implement me!
         int bucketIdx = getBucketIdx(key);
         LinkedList<Entry<K, V>> bucket = this.data.get(bucketIdx);
         if (bucket != null) {
@@ -158,6 +152,12 @@ public class UnorderedMap<K, V> implements MapInterface<K, V> {
 
     // More helpers here if you need 
 
+    /**
+     * Converts key into a corresponding bucket index using hashCode
+     *
+     * @param key the key to be hashed
+     * @return the index of the corresponding bucket
+     */
     private int getBucketIdx(K key) {
         int bucketIdx = key.hashCode() % this.bucketCount;
         if (bucketIdx < 0) {
@@ -166,15 +166,27 @@ public class UnorderedMap<K, V> implements MapInterface<K, V> {
         return bucketIdx;
     }
 
-    // Claude assisted prime functions
+    /**
+     * Checks if the given number is a prime
+     *
+     * @param n the number to check
+     * @return true if n is prime, false otherwise
+     * @AI This method was written by Claude Sonnet 5.5
+     */
     private static boolean isPrime(int n) {
         if (n < 2) return false;
-        for (int i = 2; (long) i * i <= n; i++) {
+        for (int i = 2; (long) i * i <= n; i++) { // Checks square roots only
             if (n % i == 0) return false;
         }
         return true;
     }
 
+    /**
+     * Finds the next immediate prime number starting from a given number
+     *
+     * @param from The number to start finding from
+     * @return the next prime
+     */
     private static int nextPrime(int from) {
         int candidate = from;
         while (!isPrime(candidate)) {
@@ -183,6 +195,12 @@ public class UnorderedMap<K, V> implements MapInterface<K, V> {
         return candidate;
     }
 
+    /**
+     * Inserting function specifically for resizing rehash
+     *
+     * @param key the key to insert
+     * @param value the value associated with the key
+     */
     private void rehashInsert(K key, V value) {
         int bucketIdx = getBucketIdx(key);
         LinkedList<Entry<K, V>> bucket = this.data.get(bucketIdx);
@@ -193,6 +211,9 @@ public class UnorderedMap<K, V> implements MapInterface<K, V> {
         bucket.add(new Entry<>(key, value));
     }
 
+    /**
+     * Resizes the map size to the next immediate prime larger than double the old size
+     */
     private void resize() {
         List<LinkedList<Entry<K, V>>> oldData = this.data;
         int newCapacity = nextPrime(this.bucketCount * 2);

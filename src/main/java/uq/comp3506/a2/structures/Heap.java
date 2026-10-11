@@ -28,7 +28,6 @@ public class Heap<K extends Comparable<K>, V> {
      */
     public Heap() {
         this.data = new ArrayList<>();
-        // Implement me!
     }
 
     /**
@@ -45,24 +44,21 @@ public class Heap<K extends Comparable<K>, V> {
     /**
      * Returns the index of the parent of the node at index i
      */
-    private int parent(int i) { 
-        // Implement me!
+    private int parent(int i) {
         return (i - 1) / 2;
     }
 
     /**
      * Returns the index of the left child of the node at index i
      */
-    private int left(int i) { 
-        // Implement me!
+    private int left(int i) {
         return 2 * i + 1;
     }
 
     /**
      * Returns the index of the right child of the node at index i
      */
-    private int right(int i) { 
-        // Implement me!
+    private int right(int i) {
         return 2 * i + 2;
     }
 
@@ -76,7 +72,7 @@ public class Heap<K extends Comparable<K>, V> {
      * Swaps the node at index i upwards until the heap property is satisfied
      */
     private void upHeap(int i) {
-        if (i == 0) {
+        if (i == 0) { // Already at top
             return;
         }
         int p = parent(i);
@@ -116,13 +112,11 @@ public class Heap<K extends Comparable<K>, V> {
 
     /** The number of elements in the heap*/
     public int size() {
-        // Implement me!
         return this.size;
     }
 
     /** True if there are no elements in the heap; false otherwise*/
     public boolean isEmpty() {
-        // Implement me!
         return this.size == 0;
     }
 
@@ -132,7 +126,6 @@ public class Heap<K extends Comparable<K>, V> {
      * Amortized because the array may resize.
      */
     public void insert(K key, V value) {
-        // Implement me!
         Entry<K, V> entry = new Entry<>(key, value);
         insert(entry);
     }
@@ -143,7 +136,6 @@ public class Heap<K extends Comparable<K>, V> {
      * Time complexity for full marks: O(log n)*
      */
     public void insert(Entry<K, V> entry) {
-        // Implement me!
         this.data.add(entry);
         upHeap(this.size);
         this.size++;
@@ -163,7 +155,7 @@ public class Heap<K extends Comparable<K>, V> {
         }
         Entry<K, V> root = this.data.getFirst();
         swap(0, this.size - 1);
-        this.data.remove(this.size - 1); // So this.size == data.size()
+        this.data.remove(this.size - 1); // Maintains this.size == data.size()
         this.size--;
         downHeap(0);
         return root;
@@ -201,7 +193,6 @@ public class Heap<K extends Comparable<K>, V> {
      * Clear all of the data and reset the heap to an empty state/
      */
     public void clear() {
-        // Implement me!
         this.data.clear();
         this.size = 0;
     }

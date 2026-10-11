@@ -1,1 +1,123 @@
-HI
+AI STATEMENT
+AI was used to assist, review code as well as designing some test code.
+The implementations are my own, but Claude confirmed or suggested approaches in several places, listed below
+
+AI (Claude Sonnet 5.5) was used as follows (condensed and paraphrased for relevance)
+
+Task 1: Heap based PQ
+I used Claude to review my code and catch bugs.
+
+Prompt: [Pasted upheap code]. this.data.get(i) < this.data.get(parent(i)) is having issues. How do I compare values properly in Java?
+Response: Explained that < doesn’t work on objects, that getKey().compareTo() is needed, and that the root needs a base case.
+
+Prompt: [Pasted downheap code]. This is currently potentially accessing out of bounds children right?
+Response: Identified Out-of-bounds access on leaves bug. Suggested l < size / r < size checks.
+
+
+Task 1: Unordered Map
+
+I used Claude to review each of my put attempts. Claude wrote isPrime in full.
+Claude supplied an outline of a test harness and a list of corner cases. I wrote my own tests.
+
+Prompt: [Pasted put code]. Can you review bugs in this function?
+Response: Listed five bugs (modding by size, negative hash codes, reference equality,
+passing type parameters to the Entry constructor, size never incremented) and supplied a corrected version.
+
+Prompt: [pasted resize/rehashInsert]
+Response: Found that bucketCount was never updated before the rehash loop,
+so entries were rehashed into the old index range and every later insert re-triggered a resize.
+
+Prompt: I would like to resize to next prime number near double the current size. I need a function that just
+checks if a given number is prime that only looks at square roots for efficiency.
+Response: (Showed the isPrime function)
+
+Task 2.1: No AI used
+
+Task 2.2: Doomino's Pizza Delivery
+
+I used Claude to discuss data-structure choices and to review my code for bugs. Claude did not write the solution.
+
+Prompt: Can't I use a HashMap with x as the key and y as the value?
+Response: Explained that this is incorrect, not just unconventional,
+because one value per key loses information. Traced "UD" as a counterexample.
+
+Prompt: [Pasted firstVisited draft]. How is this start?
+Response: Found two bugs: the origin was never added to the set,
+and the counter was off by one (suggested using the loop index).
+
+
+Task 2.3: Curst Pizza's Robot Blocker
+
+I used Claude to confirm my approach and to trace my code. The Pathfinder implementation is my own.
+
+Prompt: Is a disjoint set the right approach? I can join new coordinates like water droplets or electricity
+Response: Said yes. Hinted at virtual left/right nodes without giving code
+
+Prompt: [Pasted Pathfinder class]. Can you simulate what the parent array would look like after some runtime?
+Response: Hand-traced the code and showed the final parent array.
+Noted that union has no size/rank check (correct, but without a worst-case guarantee) and suggested a 3x3 test.
+
+
+Task 2.4: Tunnel Vision Topology Detection
+
+I used Claude to compare approaches and to check my plan.
+Claude also suggested the two-counter design, which I implemented myself.
+
+Prompt: Do I use DFS or a disjoint set? Pros and cons? I think both work fine at the same time.
+Response: Said both work and recommended union-find since I had just written it.
+Said a single global cycle flag isn't enough and that cycle information is needed per burrow.
+
+Prompt: Can you do a naive simulation of going through the edges?
+Response: Gave a worked 5-entrance trace showing the parent array and forest after each edge.
+
+Prompt: Perhaps I can use a 3-bit variable as flags. [Pasted TopologyType enum].
+Response: Corrected its earlier implication that there were four outputs (the enum has six).
+Explained the bit-flag version and suggested two counters instead, with a table mapping the counts to each enum value.
+
+
+Task 2.5: The UQ Nephilim Labyrinth
+
+I used Claude to review my approach, trace my code for bugs, and suggest test cases.
+Claude did not write any code; the implementation is my own.
+
+My initial plan, before any AI input: query every node once with the full node set
+to get its longest-path length, so the largest value is the path length and the
+values count down along the path. To handle ties (several nodes with the same
+value), I planned to re-query with half of the candidate nodes removed, binary-search
+style. I estimated the cost as L * log2(candidates) < N, so the total would stay
+under 2N. I also wrote the initial loop making the N queries.
+
+*I did, off my own analysis, switch away from binary search for duplicates despite some AI interaction about it
+
+Prompt: [Pasted plan]. Is it a good approach to find duplicates with a binary search
+style re-query?
+Response: Said the first step was sound and that duplicates were the real problem.
+Claimed binary search wouldn't fit the 2n tier.
+Prompt: I disagree, wouldn't it be this bound (L * log2(candidates))
+Response: corrected itself and explained why the total stays
+under 2n.
+
+Prompt: Is an int[][] or a hash structure better for the buckets?
+Response: Said either works and that dense integer keys suit arrays. I chose a
+list of lists indexed by query value.
+
+Prompt: [Pasted code]. I'm getting NoSuchElementException / an out of range vertex.
+Response: Pointed out the bucket count was off by one, the walk started at n rather
+than the longest path length, prev was a bucket number rather than a node id, the
+test array had stale slots, and the final array was sized n. Pointed me to the
+docstring to show query counts vertices, so a return of 0 never happens.
+
+Prompt: Isn't the two-vertex check safe if a successor is a dead end?
+Response: Gave the general argument (successor values are at most k-1, and at least
+one equals k-1), which rules out dead ends and indirect routes.
+
+
+Claude did not compile or run any code; I tested my own implementations.
+
+
+Test code (all tasks)
+Prompt (generic, used for each task): asked Claude to write basic test code for the class I had implemented.
+Response: Claude supplied basic tests (for Unordered Map this included a test harness outline and a list of corner cases).
+I used these as a starting point and added further tests of my own where I felt coverage was lacking.
+Test code is not part of the marked implementation, and Claude did not write any implementation code
+beyond what is listed in the task entries above (the put correction and isPrime).

@@ -75,8 +75,6 @@ public class Problems {
      *         if no cell is revisited
      */
     public static long firstVisited(String commands) {
-        // This is just a placeholder.
-        // Modify this method as you wish
         HashSet<Point> points = new HashSet<>();
         int X = 0;
         int Y = 0;
@@ -99,7 +97,7 @@ public class Problems {
                     break;
             }
             Point point = new Point(X, Y);
-            if (!points.add(point)) {
+            if (!points.add(point)) { // Duplicate
                 return i;
             }
         }
@@ -129,12 +127,16 @@ public class Problems {
      * @return a pathfinder for an {@code n}-by-{@code n} grid
      */
     public static Pathfinder pathfinder(int n) {
-        // This is just a placeholder.
-        // Modify this method as you wish
         return new Pathfinder(n);
     }
 
-
+    /**
+     * Finds the root parent of the set using path halving
+     *
+     * @param i The index/element to find the root for
+     * @param parent A map representing the parent pointer of the elements
+     * @return The index of the root parent
+     */
     private static int find(int i, HashMap<Integer, Integer> parent) {
         while (i != parent.get(i)) {
             int currentParent = parent.get(i);
@@ -145,6 +147,13 @@ public class Problems {
         return i;
     }
 
+    /**
+     * Unites the sets containing elements idxA and idxB.
+     *
+     * @param idxA An element in the first set.
+     * @param idxB idxB An element in the second set (its root will become the parent)
+     * @param parent A map representing the parent pointer of elements
+     */
     private static void union(int idxA, int idxB, HashMap<Integer, Integer> parent) {
         int rootA = find(idxA, parent);
         int rootB = find(idxB, parent);
@@ -217,6 +226,14 @@ public class Problems {
         return dummy;
     }
 
+    /**
+     * Queries an array of duplicate nodes to determine the next valid node along the path
+     *
+     * @param oracle The MightyGraphOracle to query
+     * @param candidates The bucket of duplicate vertexes
+     * @param prev The previous valid node
+     * @return the valid next node
+     */
     private static int determineNextNode(MightyGraphOracle oracle, ArrayList<Integer> candidates, int prev) {
         for (int candidate : candidates) {
             int[] test = new int[2];
@@ -251,12 +268,12 @@ public class Problems {
     public static void graphExplorer(MightyGraphOracle graphOracle) {
         int n = graphOracle.numberOfNodes();
         int[] allNodes = new int[n];
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {   // Makes an array of all nodes
             allNodes[i] = i;
         }
         ArrayList<ArrayList<Integer>> maxPaths = new ArrayList<>();
         for (int i = 0; i < n + 1 ; i++) {
-            maxPaths.add(new ArrayList<>()); // create buckets
+            maxPaths.add(new ArrayList<>()); // initializes buckets
         }
 
         int longestPathLength = 0;
@@ -265,17 +282,17 @@ public class Problems {
             int pathLength = graphOracle.query(i,allNodes);
             maxPaths.get(pathLength).add(i);
             if (pathLength > longestPathLength) {
-                longestPathLength = pathLength;
+                longestPathLength = pathLength; // records the longest path length
             }
         }
 
         for (int i = longestPathLength; i > 0; i--) {
             ArrayList<Integer> bucket = maxPaths.get(i);
-            if (bucket.size() <= 1) {
+            if (bucket.size() <= 1) { // Only handle buckets with duplicates
                 continue;
             }
             int candidate;
-            if (i == longestPathLength) {
+            if (i == longestPathLength) { // If multiple starting point for longest, take any start
                 candidate = bucket.getFirst();
             } else {
                 candidate = determineNextNode(graphOracle, bucket, maxPaths.get(i+1).getFirst());

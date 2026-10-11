@@ -16,6 +16,7 @@ public class Pathfinder {
     private final int[] parent;
     private final boolean[] isAccessible;
 
+    // Virtual nodes signifying connection to edge in any way
     private final int vRight;
     private final int vLeft;
 
@@ -39,15 +40,28 @@ public class Pathfinder {
             parent[i] = i;
         }
 
-        this.isAccessible[vLeft] = true;
+        this.isAccessible[vLeft] = true; // default
         this.isAccessible[vRight] = true;
 
     }
 
+    /**
+     * Converts grid coordinates to index
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @return The index corresponding to the given coordinate
+     */
     private int getIndex(int x, int y) {
         return y * dimension + x;
     }
 
+    /**
+     * Finds root parent of the set using path halving
+     *
+     * @param i index/element to find the root for
+     * @return the index of the root parent
+     */
     private int find(int i) {
         while (i != parent[i]) {
             parent[i] = parent[parent[i]];
@@ -56,6 +70,12 @@ public class Pathfinder {
         return i;
     }
 
+    /**
+     * Unites the sets containing elements idxA and idxB.
+     *
+     * @param idxA An element in the first set.
+     * @param idxB idxB An element in the second set (its root will become the parent)
+     */
     private void union(int idxA, int idxB) {
         int rootA = find(idxA);
         int rootB = find(idxB);
@@ -67,15 +87,20 @@ public class Pathfinder {
         return x >= 0 && x < dimension && y >= 0 && y < dimension;
     }
 
+    /**
+     * Validates and calls union on a given coordinate
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param originIdx the index of the element to join the given coordinate to
+     */
     private void checkAndUnion(int x, int y, int originIdx) {
-
         if (inBounds(x, y)) {
             int flatIdx = getIndex(x, y);
             if(isAccessible[flatIdx]) {
                 union(flatIdx, originIdx);
             }
         }
-
     }
 
     /**
@@ -93,10 +118,10 @@ public class Pathfinder {
         checkAndUnion(x, y - 1, idx);
         checkAndUnion(x, y + 1, idx);
 
-        if (x == 0) {
+        if (x == 0) { // connected to the left edge
             union(idx, vLeft);
         }
-        if (x == dimension - 1) {
+        if (x == dimension - 1) { // connected to the right edge
             union(idx, vRight);
         }
     }
