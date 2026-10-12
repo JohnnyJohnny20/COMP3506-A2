@@ -17,8 +17,8 @@ public class Pathfinder {
     private final boolean[] isAccessible;
 
     // Virtual nodes signifying connection to edge in any way
-    private final int vertexRight;
-    private final int vertexLeft;
+    private final int virtualRight;
+    private final int virtualLeft;
 
     /**
      * Creates a pathfinder whose cells are initially inaccessible.
@@ -33,15 +33,15 @@ public class Pathfinder {
         this.parent = new int[totalCells + 2];
         this.isAccessible = new boolean[totalCells + 2];
 
-        this.vertexLeft = totalCells;
-        this.vertexRight = totalCells + 1;
+        this.virtualLeft = totalCells;
+        this.virtualRight = totalCells + 1;
 
         for (int i = 0; i < totalCells + 2; i++) {
             parent[i] = i;
         }
 
-        this.isAccessible[vertexLeft] = true; // default
-        this.isAccessible[vertexRight] = true;
+        this.isAccessible[virtualLeft] = true; // default
+        this.isAccessible[virtualRight] = true;
 
     }
 
@@ -119,10 +119,10 @@ public class Pathfinder {
         checkAndUnion(x, y + 1, idx);
 
         if (x == 0) { // connected to the left edge
-            union(idx, vertexLeft);
+            union(idx, virtualLeft);
         }
         if (x == dimension - 1) { // connected to the right edge
-            union(idx, vertexRight);
+            union(idx, virtualRight);
         }
     }
 
@@ -133,6 +133,6 @@ public class Pathfinder {
      * @return {@code true} if such a path exists; otherwise {@code false}
      */
     public boolean doesPathExist() {
-        return find(vertexLeft) == find(vertexRight);
+        return find(virtualLeft) == find(virtualRight);
     }
 }
